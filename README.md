@@ -1,38 +1,65 @@
-# ZaloPay-NPU-Acquiring-Campaigns-Effectiveness
-# ZaloPay New Paying User (NPU) Campaign Effectiveness
-**Analytical Case Study & Business Insights**
+# ZaloPay New Paying User Campaign Effectiveness
 
-## 1. Project Overview & Executive Summary
+## 1. Project Overview
+This project evaluates the performance and effectiveness of ZaloPay's user acquisition campaigns during the 2022 fiscal year. By analyzing transactional data, user metadata, and merchant classifications, this analysis identifies the key drivers of New Paying User (NPU) acquisition, evaluates campaign efficiency, and maps initial user behaviors.
 
-### Business Context
-In the highly competitive digital payments and fintech ecosystem, acquiring high-quality New Paying Users (NPUs) is a primary driver of market share and long-term profitability. This project analyzes the effectiveness of marketing campaigns in driving NPU acquisition for ZaloPay over a 7-month observation period (June - December 2022).
+## 2. Business Objectives
+- **Assess Platform Growth:** Understand the overall growth trajectory of ZaloPay in terms of Gross Transaction Value (GTV) and active customers.
+- **Determine Campaign Effectiveness:** Identify which promotional campaigns are most effective at driving verified, high-intent New Paying Users.
+- **Analyze User Intent:** Classify the initial services and products that successfully convert users from dormant/free to paying customers.
 
-### Project Objectives
-*   **Understand NPU acquisition performance** and quantify individual campaign contributions.
-*   **Identify high-performing campaigns** and uncover overarching acquisition bottlenecks.
-*   **Evaluate campaign efficiency and acquired-user quality** (within data constraints).
-*   **Translate analytical findings into recommendations** for campaign optimization and marketing budget allocation.
+## 3. Dataset Overview
+The analysis is based on three core relational tables:
+- `transaction_info`: 301,107 records detailing transaction metadata, amounts, discounts, and statuses.
+- `user_info`: 33,686 records containing account creation dates and demographic metadata.
+- `merchant_info`: 748 records classifying application IDs into report categories and sub-categories.
 
-### Executive Summary
-Despite explosive overall platform growth (GTV grew by over 163% in H2 2022), **NPU acquisition steadily declined by 56%** from June to December. User acquisition is highly concentrated and vulnerable, with just 3 out of 453 campaigns driving 21% of all NPUs. Furthermore, nearly 63% of newly acquired users leverage their first promotional incentive on low-margin, high-utility services (Balance Increases and Utility Payments). To sustain platform growth, ZaloPay must urgently diversify its acquisition channels, combat top-of-funnel campaign fatigue, and build immediate cross-sell journeys to shift users from utility to lifestyle services.
+## 4. Key Business Metrics & Definitions
+- **Gross Transaction Value (GTV):** The total unadjusted value of all successful transactions on the platform.
+- **New Paying User (NPU):** Defined strictly as a user whose *first-ever successful transaction on the platform* was attributed to a marketing campaign (`campaignID != 0`). 
+  > *Note: Users whose first transaction was organic but subsequently used a promo code are excluded from NPU campaign attribution to preserve acquisition integrity.*
+- **Incentive Subsidy Proxy:** The amount discounted from the total transaction value, serving as a proxy for the direct subsidy cost to acquire the user.
 
----
+## 5. Analytical Approach
 
-## 2. Dataset Overview
+### NPU Acquisition Performance
+The platform acquired **33,631 valid NPUs** through promotional campaigns in 2022. Acquisition peaked in June (7,913 NPUs) and experienced a downward trend throughout Q3 and Q4, stabilizing around 4,000 users per month by year-end.
 
-The analysis relies on three relational datasets containing transactional and categorical data. 
+![NPU Acquisition Trend](images/npu_trend.png)
 
-*   **Business Domain:** Fintech / Digital Payments
-*   **Observation Window:** June 2022 – December 2022
+### Campaign Effectiveness
+Out of 453 launched campaigns, acquisition is heavily concentrated among top performers. 
+- **Campaign 8932** was the undisputed top performer, acquiring 3,740 NPUs (over 11% of total NPU acquisition).
+- **Campaign 8386** followed with 1,944 NPUs.
 
-| Dataset | Records | Description & Analytical Purpose |
-| :--- | :--- | :--- |
-| `transaction_info` | 301,107 | Core fact table. Used to calculate GTV, track applied discounts, and determine the chronological first transaction for accurate NPU identification. |
-| `user_info` | 33,686 | Dimension table providing demographic context and account creation dates to measure activation latency. |
-| `merchant_info` | 748 | Dimension table mapping `appID` to macro and micro service categories to understand where users spend their first promotional incentive. |
+![Top 10 Campaigns](images/top_campaigns.png)
 
-### Data Quality & Preprocessing
-*   **Status Resolution:** 28,366 negative status codes were identified as failed transactions. Only `transStatus == 1` was considered valid for financial metrics and NPU activation.
-*   **Strict NPU Identification:** To avoid falsely flagging existing organic users as NPUs, the logic evaluated a user's *absolute first successful transaction on the platform chronologically*. Only if that first transaction utilized a campaign (`campaignID != 0`) was the user classified as a campaign-acquired NPU.
+### Initial User Intent and Quality
+When users make their first subsidized transaction, their intent is heavily skewed toward essential services:
+- **Access Service** accounts for 43.8% of initial NPU transactions (driven heavily by Balance Increases).
+- **Obligation Payment** accounts for 34.8% (driven by Utility Services).
 
-### Data Schema
+![NPU Categories](images/npu_categories.png)
+
+## 6. Key Findings & Business Recommendations
+1. **Optimize High-Performing Categories:** Over 78% of NPUs are acquired through Utility Payments and Balance Increases. Marketing budgets should be heavily allocated toward campaigns promoting these high-necessity categories to capture new users efficiently.
+2. **Investigate Acquisition Decline:** While total platform GTV doubled from June to November (reaching 12.78B VND), NPU acquisition nearly halved in the same period. 
+   ![Monthly GTV Trend](images/monthly_gtv.png)
+   *Recommendation:* ZaloPay is successfully monetizing its existing user base, but acquisition campaigns are losing efficiency. We recommend refreshing campaign creatives and testing new incentive thresholds to combat potential audience fatigue.
+3. **Analyze Extreme Subsidy Outliers:** 4,397 transactions were completed with a user charge of 100 VND or less, resulting in a ~99% discount ratio. 
+   *Recommendation:* Business rules should be reviewed to confirm if these deep subsidies align with Customer Acquisition Cost (CAC) targets, or if they represent platform abuse/loophole exploitation.
+
+## 7. Proposed Campaign Evaluation Framework
+To move beyond sheer acquisition volume, future iterations of this analysis should measure:
+- **CAC (Customer Acquisition Cost):** Using exact marketing spend divided by validated NPUs.
+- **Day-30 / Day-90 Retention:** Measuring the percentage of NPUs who make a *second, organic* transaction within 30 and 90 days.
+- **Payback Period:** Calculating how long it takes for a cohort's generated margin to exceed their initial subsidy cost.
+
+## 8. Limitations & Further Analysis
+- **Negative Transaction Statuses:** 28,366 transactions feature negative status codes. Without a formal data dictionary, it is impossible to distinguish between system failures and user-initiated refunds.
+- **Missing Promotion Context:** Missing values in `promotion_type` correlate exactly to `campaignID = 0`. This is expected behavior (organic transactions lack a promotion type), but should be standardized at the database level.
+- **Retention Data Required:** Current datasets lack post-acquisition activity markers to calculate LTV (Life-Time Value) or retention curves.
+
+## 9. Tools & Technologies
+- **Python (Pandas, NumPy):** Data cleaning, anomaly detection, and metric aggregation.
+- **Matplotlib & Seaborn:** Data visualization.
