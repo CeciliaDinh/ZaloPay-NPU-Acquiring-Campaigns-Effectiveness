@@ -1,26 +1,43 @@
 # ZaloPay New Paying User Campaign Effectiveness
 
-## 1. Project Overview
+<details>
+<summary><h2>1. Project Overview</h2></summary>
+
 This project evaluates the performance and effectiveness of ZaloPay's user acquisition campaigns during the 2022 fiscal year. By analyzing transactional data, user metadata, and merchant classifications, this analysis identifies the key drivers of New Paying User (NPU) acquisition, evaluates campaign efficiency, and maps initial user behaviors.
 
-## 2. Business Objectives
+</details>
+
+<details>
+<summary><h2>2. Business Objectives</h2></summary>
+
 - **Assess Platform Growth:** Understand the overall growth trajectory of ZaloPay in terms of Gross Transaction Value (GTV) and active customers.
 - **Determine Campaign Effectiveness:** Identify which promotional campaigns are most effective at driving verified, high-intent New Paying Users.
 - **Analyze User Intent:** Classify the initial services and products that successfully convert users from dormant/free to paying customers.
 
-## 3. Dataset Overview
+</details>
+
+<details>
+<summary><h2>3. Dataset Overview</h2></summary>
+
 The analysis is based on three core relational tables:
 - `transaction_info`: 301,107 records detailing transaction metadata, amounts, discounts, and statuses.
 - `user_info`: 33,686 records containing account creation dates and demographic metadata.
 - `merchant_info`: 748 records classifying application IDs into report categories and sub-categories.
 
-## 4. Key Business Metrics & Definitions
+</details>
+
+<details>
+<summary><h2>4. Key Business Metrics & Definitions</h2></summary>
+
 - **Gross Transaction Value (GTV):** The total unadjusted value of all successful transactions on the platform.
 - **New Paying User (NPU):** Defined strictly as a user whose *first-ever successful transaction on the platform* was attributed to a marketing campaign (`campaignID != 0`). 
   > *Note: Users whose first transaction was organic but subsequently used a promo code are excluded from NPU campaign attribution to preserve acquisition integrity.*
 - **Incentive Subsidy Proxy:** The amount discounted from the total transaction value, serving as a proxy for the direct subsidy cost to acquire the user.
 
-## 5. Analytical Approach
+</details>
+
+<details>
+<summary><h2>5. Analytical Approach</h2></summary>
 
 ### NPU Acquisition Performance
 The platform acquired **33,631 valid NPUs** through promotional campaigns in 2022. Acquisition peaked in June (7,913 NPUs) and experienced a downward trend throughout Q3 and Q4, stabilizing around 4,000 users per month by year-end.
@@ -41,7 +58,11 @@ When users make their first subsidized transaction, their intent is heavily skew
 
 ![NPU Categories](images/npu_categories.png)
 
-## 6. Key Findings & Business Recommendations
+</details>
+
+<details>
+<summary><h2>6. Key Findings & Business Recommendations</h2></summary>
+
 1. **Optimize High-Performing Categories:** Over 78% of NPUs are acquired through Utility Payments and Balance Increases. Marketing budgets should be heavily allocated toward campaigns promoting these high-necessity categories to capture new users efficiently.
 2. **Investigate Acquisition Decline:** While total platform GTV doubled from June to November (reaching 12.78B VND), NPU acquisition nearly halved in the same period. 
    ![Monthly GTV Trend](images/monthly_gtv.png)
@@ -49,17 +70,31 @@ When users make their first subsidized transaction, their intent is heavily skew
 3. **Analyze Extreme Subsidy Outliers:** 4,397 transactions were completed with a user charge of 100 VND or less, resulting in a ~99% discount ratio. 
    *Recommendation:* Business rules should be reviewed to confirm if these deep subsidies align with Customer Acquisition Cost (CAC) targets, or if they represent platform abuse/loophole exploitation.
 
-## 7. Proposed Campaign Evaluation Framework
+</details>
+
+<details>
+<summary><h2>7. Proposed Campaign Evaluation Framework</h2></summary>
+
 To move beyond sheer acquisition volume, future iterations of this analysis should measure:
 - **CAC (Customer Acquisition Cost):** Using exact marketing spend divided by validated NPUs.
 - **Day-30 / Day-90 Retention:** Measuring the percentage of NPUs who make a *second, organic* transaction within 30 and 90 days.
 - **Payback Period:** Calculating how long it takes for a cohort's generated margin to exceed their initial subsidy cost.
 
-## 8. Limitations & Further Analysis
+</details>
+
+<details>
+<summary><h2>8. Limitations & Further Analysis</h2></summary>
+
 - **Negative Transaction Statuses:** 28,366 transactions feature negative status codes. Without a formal data dictionary, it is impossible to distinguish between system failures and user-initiated refunds.
 - **Missing Promotion Context:** Missing values in `promotion_type` correlate exactly to `campaignID = 0`. This is expected behavior (organic transactions lack a promotion type), but should be standardized at the database level.
 - **Retention Data Required:** Current datasets lack post-acquisition activity markers to calculate LTV (Life-Time Value) or retention curves.
 
-## 9. Tools & Technologies
+</details>
+
+<details>
+<summary><h2>9. Tools & Technologies</h2></summary>
+
 - **Python (Pandas, NumPy):** Data cleaning, anomaly detection, and metric aggregation.
 - **Matplotlib & Seaborn:** Data visualization.
+
+</details>
